@@ -7,11 +7,11 @@ namespace AvaloniaApplication1;
 public partial class MainWindowViewModel : LocalizedViewModel
 {
     [ObservableProperty]
-    [LocalizedProperty(@"Hi. {0} Ioannis. {1}", "MyNameIs", "HowAreYou")]
+    [LocalizedProperty(@"{Hi}. {MyNameIs} Ioannis. {HowAreYou}")]
     private string _title;
 
     [ObservableProperty]
-    [LocalizedProperty("{0}", "Culture")]
+    [LocalizedProperty("{Culture}")]
     private string _currentCulture;
 
     [RelayCommand]

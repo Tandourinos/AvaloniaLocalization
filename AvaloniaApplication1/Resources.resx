@@ -27,4 +27,7 @@
     <data name="Culture" xml:space="preserve">
         <value>English</value>
     </data>
+    <data name="Hi" xml:space="preserve">
+        <value>Hi</value>
+    </data>
 </root>
