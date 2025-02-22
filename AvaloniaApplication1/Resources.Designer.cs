@@ -56,5 +56,11 @@ namespace AvaloniaApplication1 {
                 return ResourceManager.GetString("HowAreYou", resourceCulture);
             }
         }
+        
+        internal static string Hi {
+            get {
+                return ResourceManager.GetString("Hi", resourceCulture);
+            }
+        }
     }
 }

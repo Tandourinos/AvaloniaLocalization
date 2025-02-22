@@ -1,11 +1,15 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Resources;
 using System.Text.RegularExpressions;
 using System.Threading;
+using Avalonia.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
+using StringTokenFormatter;
+using StringTokenFormatter.Impl;
 
 namespace AvaloniaApplication1;
 
@@ -21,45 +25,64 @@ public abstract class LocalizedViewModel : ObservableObject
 
     protected void SwitchTo(CultureInfo cultureInfo)
     {
-        Thread.CurrentThread.CurrentUICulture = cultureInfo;
-        Thread.CurrentThread.CurrentCulture = cultureInfo;
-        
+        ChangeThreadCulture(cultureInfo);
+        var localizableFields = GetAllLocalizableMembers();
         var attributeType = typeof(LocalizedPropertyAttribute);
-
-        var localizableFields = GetType()
-            .GetMembers(BindingFlags.NonPublic | BindingFlags.Instance)
-            .Where(m => Attribute.IsDefined(m, attributeType, false)).ToList();
-
         foreach (var field in localizableFields)
         {
-            // Get corresponding property
-            if (field.Name.StartsWith("_"))
+            var property = GetCorrespondingProperty(field);
+            if (property != null && property.CanWrite)
             {
-                var propName = Regex.Replace(field.Name, @"_(\w)", m => m.Groups[1].Value.ToUpper());
-                var prop = field.DeclaringType.GetProperty(propName);
-                if (prop != null && prop.CanWrite)
+                var attr = field.GetCustomAttribute(attributeType, false) as LocalizedPropertyAttribute;
+                var expression = attr?.Expression;
+                if (expression != null)
                 {
-                    var attr = field.GetCustomAttribute(attributeType, false) as LocalizedPropertyAttribute;
-                    var expression = attr.Expression;
-                    var tokens = attr.Tokens;
-                    
-                    //string pattern = @"(?<!{)\{(\d+)\}(?!})";
-                    var pattern = @"\{(\d+)\}";
-                    expression = Regex.Replace(expression, pattern, (m) =>
+                    var parsedExpression =
+                        InterpolatedStringParser.Parse(expression, StringTokenFormatterSettings.Default);
+                    var replacements = new List<KeyValuePair<string, string>>();
+                    foreach (var token in parsedExpression.Tokens())
                     {
-                        var key = m.Groups[1].Value;
-                        if (int.TryParse(key, out int index) && index >= 0 && index < tokens.Length)
+                        var replacement = _resourceManager.GetString(token);
+                        if (replacement == null)
                         {
-                            return _resourceManager.GetString(tokens[index]) ?? m.Groups[0].Value;
+                            // Not sure what is best here. Exception or fallback to token itself...
+                            replacement = token;
                         }
-                        return m.Groups[0].Value;
-                    });
-                    expression = expression.Replace("\\{", "{");
-                    expression = expression.Replace("\\}", "}");
-                    
-                    prop.SetValue(this, expression);
+
+                        replacements.Add(new KeyValuePair<string, string>(token, replacement));
+                    }
+
+                    expression = expression.FormatFromPairs(replacements);
                 }
+
+                property.SetValue(this, expression);
             }
         }
+    }
+    
+    private List<MemberInfo> GetAllLocalizableMembers()
+    {
+        var attributeType = typeof(LocalizedPropertyAttribute);
+        return GetType()
+            .GetMembers(BindingFlags.NonPublic | BindingFlags.Instance)
+            .Where(m => Attribute.IsDefined(m, attributeType, false)).ToList();
+    }
+
+    //TODO: Needs work
+    private PropertyInfo? GetCorrespondingProperty(MemberInfo field)
+    {
+        if (field.Name.StartsWith("_"))
+        {
+            var propName = Regex.Replace(field.Name, @"_(\w)", m => m.Groups[1].Value.ToUpper());
+            return field.DeclaringType?.GetProperty(propName);
+        }
+
+        return null;
+    }
+    
+    private void ChangeThreadCulture(CultureInfo cultureInfo)
+    {
+        Thread.CurrentThread.CurrentUICulture = cultureInfo;
+        Thread.CurrentThread.CurrentCulture = cultureInfo;
     }
 }

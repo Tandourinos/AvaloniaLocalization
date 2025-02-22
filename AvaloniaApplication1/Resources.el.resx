@@ -20,4 +20,7 @@
     <data name="Culture" xml:space="preserve">
         <value>Ελληνικά</value>
     </data>
+    <data name="Hi" xml:space="preserve">
+        <value>Γειά σου</value>
+    </data>
 </root>
