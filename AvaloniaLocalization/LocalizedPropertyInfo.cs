@@ -1,14 +1,14 @@
 using System.Reflection;
 
-namespace AvaloniaApplication1;
+namespace AvaloniaLocalization;
 
 public class LocalizedPropertyInfo
 {
-    public string FieldName { get; set; }
-    public string PropertyName { get; set; }
+    public string FieldName { get; set; } = string.Empty;
+    public string PropertyName { get; set; } = string.Empty;
 
-    public FieldInfo FieldInfo { get; set; }
-    public PropertyInfo PropertyInfo { get; set; }
+    public FieldInfo FieldInfo { get; set; } = null!;
+    public PropertyInfo PropertyInfo { get; set; } = null!;
     public bool ResetExpression { get; set; } = true;
 
     public string? Expression { get; set; } = null;

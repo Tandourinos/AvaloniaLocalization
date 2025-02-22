@@ -8,7 +8,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using StringTokenFormatter;
 using StringTokenFormatter.Impl;
 
-namespace AvaloniaApplication1;
+namespace AvaloniaLocalization;
 
 public abstract class LocalizedViewModel : ObservableObject
 {
