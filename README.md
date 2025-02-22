@@ -27,3 +27,6 @@ public partial class MainWindowViewModel : LocalizedViewModel
 Is is production ready? _No_ Feel free to use and contribute. I am trying to find a simple way to do real-time localization.
 
 ***Free software? Yeah!!***
+### Screenshots
+![Image](https://github.com/user-attachments/assets/e65702a3-7eaa-479a-9116-6a70f786f38a)
+![Image](https://github.com/user-attachments/assets/adc042b3-845c-4250-8716-5ac42e36f09f)
