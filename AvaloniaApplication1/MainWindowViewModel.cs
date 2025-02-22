@@ -4,15 +4,13 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace AvaloniaApplication1;
 
-public partial class MainWindowViewModel : LocalizedViewModel
+public partial class MainWindowViewModel() : LocalizedViewModel(Resources.ResourceManager)
 {
-    [ObservableProperty]
-    [LocalizedProperty(@"{Hi}. {MyNameIs} Ioannis. {HowAreYou}")]
-    private string _title;
+    [ObservableProperty] [LocalizableProperty]
+    private string _currentCulture = @"{Culture}";
 
-    [ObservableProperty]
-    [LocalizedProperty("{Culture}")]
-    private string _currentCulture;
+    [ObservableProperty] [LocalizableProperty]
+    private string _title = @"{Hi}. {MyNameIs} Ioannis. {HowAreYou}";
 
     [RelayCommand]
     private void Switch()

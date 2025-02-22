@@ -8,8 +8,10 @@
         x:DataType="avaloniaApplication1:MainWindowViewModel"
         Title="AvaloniaApplication1">
     <StackPanel Orientation="Vertical">
-        <TextBlock Text="{Binding Title}"/>
-        <Button Content="Switch" Command="{Binding SwitchCommand}" HorizontalAlignment="Center"/>
-        <TextBlock Text="{Binding CurrentCulture}"/>
+        <TextBlock Text="{Binding CurrentCulture}" />
+        <TextBlock Text="{Binding Title}" />
+        <Button Content="Switch" Command="{Binding SwitchCommand}" HorizontalAlignment="Center" />
+        <TextBlock Text="Change the expression: Use replacement tokens. i.e. {Hi}" />
+        <TextBox Text="{Binding Title}" />
     </StackPanel>
 </Window>
